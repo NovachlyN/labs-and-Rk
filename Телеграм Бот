@@ -1,0 +1,55 @@
+from aiogram import Bot, Dispatcher, types,F
+from aiogram.filters import CommandStart
+import asyncio
+
+TOKEN = '7694349417:AAGxCpXOXmcL-nWM85kGIdM6to87tTpOiKI'
+
+bot = Bot(token=TOKEN)
+dp = Dispatcher()
+
+# Создаем клавиатуру с кнопками
+# def create_keyboard():
+#     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, keyboard=[
+#   [KeyboardButton('Выбор услуги'), KeyboardButton('Очистить историю')],
+#   [KeyboardButton('Запись на консультацию'), KeyboardButton('Задать свой вопрос')]
+# ])
+
+def create_keyboard():
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    keyboard.add("Выбор услуги")
+    keyboard.add("Очистить историю")
+    keyboard.add("Запись на консультацию к преподавателю")
+    keyboard.add("Задать свой вопрос")
+    return keyboard
+
+@dp.message(CommandStart())
+async def send_welcome(message: types.Message):
+    await message.reply(
+        "Привет!nЯ бот помощник по предмету ПиКЯП!nВыберите одну из услуг:",
+        reply_markup=create_keyboard()
+    )
+
+@dp.message(lambda message: message.text in ["Выбор услуги", "Очистить историю", "Запись на консультацию к преподавателю", "Задать свой вопрос"])
+async def handle_service_selection(message: types.Message):
+    if message.text == "Выбор услуги":
+        await message.answer("Выберите услугу из списка...")
+        # Здесь можно добавить логику для выбора услуги
+    elif message.text == "Очистить историю":
+        await message.answer("История очищена.")
+        # Здесь можно добавить логику для очистки истории
+    elif message.text == "Запись на консультацию к преподавателю":
+        await message.answer("Запись на консультацию...")
+        # Здесь можно добавить логику для записи на консультацию
+    elif message.text == "Задать свой вопрос":
+        await message.answer("Пожалуйста, задайте ваш вопрос.")
+        # Здесь можно добавить логику для обработки вопросов
+
+@dp.message()
+async def echo(message: types.Message):
+    await message.answer(message.text)
+
+async def main():
+    await dp.start_polling(bot)
+
+if __name__ == '__main__':
+    asyncio.run(main())
